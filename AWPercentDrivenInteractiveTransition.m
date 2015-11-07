@@ -135,6 +135,17 @@
         layer.beginTime = 0.0; // Need to reset to 0 to avoid flickering :S
         CFTimeInterval timeSincePause = [layer convertTime:CACurrentMediaTime() fromLayer:nil] - pausedTime;
         layer.beginTime = timeSincePause;
+    } else {
+        [CATransaction begin];
+        [self _removeAnimationsRecursively:layer];
+        [CATransaction commit];
+    }
+}
+
+- (void)_removeAnimationsRecursively:(CALayer *)layer {
+    [layer removeAllAnimations];
+    for (CALayer *subLayer in layer.sublayers) {
+        [self _removeAnimationsRecursively:subLayer];
     }
 }
 
